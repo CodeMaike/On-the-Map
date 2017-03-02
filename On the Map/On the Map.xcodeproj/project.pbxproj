@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		69EC0FF21E68B24800ABCF3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69EC0FF11E68B24800ABCF3C /* AppDelegate.swift */; };
-		69EC0FF41E68B24800ABCF3C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69EC0FF31E68B24800ABCF3C /* ViewController.swift */; };
+		69EC0FF41E68B24800ABCF3C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69EC0FF31E68B24800ABCF3C /* LoginViewController.swift */; };
 		69EC0FF71E68B24800ABCF3C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69EC0FF51E68B24800ABCF3C /* Main.storyboard */; };
 		69EC0FF91E68B24800ABCF3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69EC0FF81E68B24800ABCF3C /* Assets.xcassets */; };
 		69EC0FFC1E68B24800ABCF3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69EC0FFA1E68B24800ABCF3C /* LaunchScreen.storyboard */; };
+		69EC10051E68B79100ABCF3C /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69EC10041E68B79100ABCF3C /* MapViewController.swift */; };
+		69EC10071E68B7B900ABCF3C /* UserTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69EC10061E68B7B900ABCF3C /* UserTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		69EC0FEE1E68B24800ABCF3C /* On the Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "On the Map.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		69EC0FF11E68B24800ABCF3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		69EC0FF31E68B24800ABCF3C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		69EC0FF31E68B24800ABCF3C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		69EC0FF61E68B24800ABCF3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		69EC0FF81E68B24800ABCF3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69EC0FFB1E68B24800ABCF3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69EC0FFD1E68B24800ABCF3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		69EC10041E68B79100ABCF3C /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		69EC10061E68B7B900ABCF3C /* UserTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,13 +59,23 @@
 			isa = PBXGroup;
 			children = (
 				69EC0FF11E68B24800ABCF3C /* AppDelegate.swift */,
-				69EC0FF31E68B24800ABCF3C /* ViewController.swift */,
+				69EC10031E68B73500ABCF3C /* View Controllers */,
 				69EC0FF51E68B24800ABCF3C /* Main.storyboard */,
 				69EC0FF81E68B24800ABCF3C /* Assets.xcassets */,
 				69EC0FFA1E68B24800ABCF3C /* LaunchScreen.storyboard */,
 				69EC0FFD1E68B24800ABCF3C /* Info.plist */,
 			);
 			path = "On the Map";
+			sourceTree = "<group>";
+		};
+		69EC10031E68B73500ABCF3C /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				69EC0FF31E68B24800ABCF3C /* LoginViewController.swift */,
+				69EC10041E68B79100ABCF3C /* MapViewController.swift */,
+				69EC10061E68B7B900ABCF3C /* UserTableViewController.swift */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,7 +150,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69EC0FF41E68B24800ABCF3C /* ViewController.swift in Sources */,
+				69EC0FF41E68B24800ABCF3C /* LoginViewController.swift in Sources */,
+				69EC10051E68B79100ABCF3C /* MapViewController.swift in Sources */,
+				69EC10071E68B7B900ABCF3C /* UserTableViewController.swift in Sources */,
 				69EC0FF21E68B24800ABCF3C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
