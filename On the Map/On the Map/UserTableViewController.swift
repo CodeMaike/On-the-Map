@@ -10,6 +10,11 @@ import UIKit
 
 class UserTableViewController: UITableViewController {
 
+    //MARK: Outlets
+    @IBOutlet weak var pinButton: UIBarButtonItem!
+    @IBOutlet weak var refreshButton: UIBarButtonItem!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
