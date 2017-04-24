@@ -11,7 +11,6 @@ import UIKit
 
 extension UdacityClient {
 
-//    func loginToUdacity(username: String, password: String, completionHandlerForLogin: @escaping (_ success: Bool, _ result: AnyObject?, _ error: NSError?) -> Void) {
     func loginToUdacity(username: String, password: String, completionHandlerForLogin: @escaping (_ success: Bool, _ result: AnyObject?, _ error: NSError?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.URLConstants.sessionURL)!)
@@ -37,8 +36,8 @@ extension UdacityClient {
                 print("The request returned no data.")
                 return
             }
-            
-            let range = Range(uncheckedBounds: (5, data.count - 5))
+
+            let range = Range(uncheckedBounds: (5, data.count))
             let newData = data.subdata(in: range)
             print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
             
@@ -58,39 +57,42 @@ extension UdacityClient {
         var parsedResult: AnyObject! = nil
         do {
             parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
+            print(parsedResult)
         } catch {
             let userInfo = [NSLocalizedDescriptionKey: "Could not parse data as JSON: \(data)"]
             completionHandlerForConvertData(false, nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+        
+            //check account
+            guard let account = parsedResult["account"] as? [String:AnyObject] else {
+                print("There is an problem with your account information.")
+                return
+            }
+            //check user id
+            guard let userID = account["key"] as? String else {
+                print("There is a problem with your user ID.")
+                return
+            }
+            //check session dictionary
+            guard let sessionDictionary = parsedResult["session"] as? [String:AnyObject] else {
+                print("There is a problem with your session dictionary.")
+                return
+            }
+            //check session
+            guard let session = sessionDictionary["userID"] as? String else {
+                print("There is a problem with your session ID.")
+                return
+            }
+            
+            
+            print(userID)
+            print(session)
+            
+            appDelegate?.userID = userID
+            appDelegate?.session = session
+            
+            completionHandlerForConvertData(true, parsedResult, nil)
         }
         
-        //check account
-        guard let account = parsedResult["account"] as? [String:AnyObject] else {
-            print("There is an problem with your account information.")
-            return
-        }
-        //check user id
-        guard let userID = account["key"] as? String else {
-            print("There is a problem with your user ID.")
-            return
-        }
-        //check session dictionary
-        guard let sessionDictionary = parsedResult["session"] as? [String:AnyObject] else {
-            print("There is a problem with your session dictionary.")
-            return
-        }
-        //check session
-        guard let session = sessionDictionary["userID"] as? String else {
-            print("There is a problem with your session ID.")
-            return
-        }
- 
         
-        print(userID)
-        print(session)
-        
-        appDelegate?.userID = userID
-        appDelegate?.session = session
-
-        completionHandlerForConvertData(true, parsedResult, nil)
     }
 }
