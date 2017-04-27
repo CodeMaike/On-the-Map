@@ -17,16 +17,14 @@ class UdacityClient: NSObject {
         super.init()
     }
     
-    //TODOD: Make constants and use to replace 
-    
-    //MARK: Posting a session
-    func taskForPOSTMethod(_ method: String, parameters: [String:AnyObject], jsonBody: String, completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionTask {
+    //MARK: Login to udacity
+    func taskForPOSTMethodUdacity(_ completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionTask {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.URLConstants.sessionURL)!)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"udacity\": {\"username\": \"account@domain.com\", \"password\": \"********\"}}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"udacity\": {\"username\": \"\(Constants.LoginData.username)\", \"password\": \"\(Constants.LoginData.password)\"}}".data(using: String.Encoding.utf8)
         
         let session = URLSession.shared
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
@@ -46,15 +44,39 @@ class UdacityClient: NSObject {
                 return
             }
             
-        let range = Range(uncheckedBounds: (5, data.count - 5))
-        let newData = data.subdata(in: range)
-        print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
+            let range = Range(5..<data.count)//(uncheckedBounds: (5, data.count))
+            let newData = data.subdata(in: range)
+            print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
+            
+            self.convertDataWithCompletionHandler(newData, completionHandlerForConvertData: completionHandlerForPOST)
         }
         
         task.resume()
         return task
     }
+
+    //MARK: Get public udacity user data
+    func taskForGETPublicUserDataUdacity(userID: String?, _ completionHandlerForGetPublicData: @ escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionTask {
     
+        let userID = userID!
+        
+        let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/users/\(userID)")!)
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            if error != nil { // Handle error...
+                return
+            }
+            let range = Range(5..<data!.count)
+            let newData = data?.subdata(in: range) /* subset response data! */
+            print(NSString(data: newData!, encoding: String.Encoding.utf8.rawValue)!)
+            
+            self.convertDataWithCompletionHandler(newData!, completionHandlerForConvertData: completionHandlerForGetPublicData)
+        }
+
+        task.resume()
+        return task
+    }
+
     
     //MARK: Deleting a session
     func taskForDELETEMethod(_ urlString: String, completionHandlerForDelete: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
@@ -96,39 +118,6 @@ class UdacityClient: NSObject {
         task.resume()
         return task
     }
-    
-    
-    //MARK: Getting public user data
-    func taskForGETMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-    
-        let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/users/3903878747")!)
-        let session = URLSession.shared
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-        
-            guard (error == nil) else {
-                print("Something went wrong with your POST request: \(error)")
-                return
-            }
-            
-            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                print("Your status code does not conform to 2xx.")
-                return
-            }
-            
-            guard let data = data else {
-                print("The request returned no data.")
-                return
-            }
-            
-            let range = Range(uncheckedBounds: (5, data.count - 5))
-            let newData = data.subdata(in: range)
-            print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
-        }
-        
-        task.resume()
-        return task
-    }
-    
     
     //MARK: Helpers
     

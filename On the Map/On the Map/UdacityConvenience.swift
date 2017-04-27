@@ -11,6 +11,7 @@ import UIKit
 
 extension UdacityClient {
 
+    //MARK: Login function to udacity
     func loginToUdacity(username: String, password: String, completionHandlerForLogin: @escaping (_ success: Bool, _ result: AnyObject?, _ error: NSError?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.URLConstants.sessionURL)!)
@@ -37,7 +38,7 @@ extension UdacityClient {
                 return
             }
 
-            let range = Range(uncheckedBounds: (5, data.count))
+            let range = Range(5..<data.count)//(uncheckedBounds: (5, data.count))
             let newData = data.subdata(in: range)
             print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
             
@@ -47,11 +48,69 @@ extension UdacityClient {
         task.resume()
         
     }
+
+    func authenticateWithViewController(_ hostViewController: UIViewController, completionHandlerForAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
+        
+        getUserID() { (success, userID, errorString) in
+            if success {
+                if let userID = userID {
+                    self.getUserData(userID: userID) { (success, userData, errorString) in
+                        completionHandlerForAuth(success, errorString)
+                    }
+                } else {
+                    completionHandlerForAuth(success, errorString)
+                }
+            } else {
+                completionHandlerForAuth(success, errorString)
+            }
+        }
+        
+    }
     
-    //TODO: check completionhandler
-    //TODO:
+    func getUserID(_ completionHandlerForGetUserID: @escaping (_ success: Bool,_ userID: String?, _ errorString: String?) -> Void) {
     
-    //convert raw JSON to usable foundation object
+        let _ = taskForPOSTMethodUdacity() { (result, error) in
+            
+            if let error = error {
+                print(error)
+                completionHandlerForGetUserID(false, nil, "Login unsuccessful")
+            } else {
+                if let account = result?["account"] as? [String:AnyObject] {
+                    if let userId = account["key"] as? String {
+                        print ("User ID: \(userId)")
+                        Constants.LoginData.uniqueKey = userId
+                        completionHandlerForGetUserID(true, userId, nil)
+                    } else {
+                        print ("User ID not found")
+                        completionHandlerForGetUserID(false, nil, "Login unsuccessful")
+                    }
+                } else {
+                    print("Account not found")
+                    completionHandlerForGetUserID(false, nil, "Login unsuccessful")
+                }
+            }
+
+        }
+    }
+    
+    func getUserData(userID: String?, _ completionHandlerForGetUserData: @escaping (_ success: Bool, _ userData: [String:AnyObject]?, _ errorString: String?) -> Void) {
+        let userID = userID!
+        let _ = taskForGETPublicUserDataUdacity(userID: userID) { (result, error) in
+            if let error = error {
+                print(error)
+                completionHandlerForGetUserData(false, nil, "Getting user data unsuccessful")
+            } else {
+                let userResult = result!
+                if let userData = userResult["user"] as? [String:AnyObject] {
+                    completionHandlerForGetUserData(true, userData, nil)
+                } else {
+                    print("No user data found")
+                }
+            }
+        }
+    }
+    
+    //MARK: Convert raw JSON to usable foundation object
     private func convertDataWithCompletionHandler(_ data: Data, completionHandlerForConvertData: (_ success: Bool, _ result: AnyObject?, _ error: NSError?) -> Void) {
         
         var parsedResult: AnyObject! = nil

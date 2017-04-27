@@ -28,6 +28,13 @@ import Foundation
             static let sessionID = "session"
         }
         
+        //MARK: Login data
+        struct LoginData {
+            static var username = ""
+            static var password = ""
+            static var uniqueKey = ""
+        }
+        
         // MARK: JSON Response Keys
         struct JSONResponseKeys {
             
