@@ -30,7 +30,7 @@ class UdacityClient: NSObject {
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             
             guard (error == nil) else {
-                print("Something went wrong with your POST request: \(error)")
+                print("Something went wrong with your POST request: \(String(describing: error))")
                 return
             }
             
@@ -96,7 +96,7 @@ class UdacityClient: NSObject {
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
         
             guard (error == nil) else {
-                print("Something went wrong with your POST request: \(error)")
+                print("Something went wrong with your POST request: \(String(describing: error))")
                 return
             }
             
@@ -146,7 +146,7 @@ class UdacityClient: NSObject {
             for (key, value) in parameters {
                 let valueString = "\(value)"
                 let valueEscaped = valueString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-                keyValuePairs.append(key + "=" + "\(valueEscaped)")
+                keyValuePairs.append(key + "=" + "\(String(describing: valueEscaped))")
             }
             return "?\(keyValuePairs.joined(separator: "&"))"
         }

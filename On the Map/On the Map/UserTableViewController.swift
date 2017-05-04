@@ -13,10 +13,16 @@ class UserTableViewController: UITableViewController {
     //MARK: Outlets
     @IBOutlet weak var pinButton: UIBarButtonItem!
     @IBOutlet weak var refreshButton: UIBarButtonItem!
+
+    var studentInformation = [[String:AnyObject]]()
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.delegate = self
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -25,22 +31,33 @@ class UserTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        studentInformation = Constants.StudentData.studentInformation
+        return studentInformation.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "StudentLocationCell", for: indexPath)
+        let pair = self.studentInformation[(indexPath as IndexPath).row]
+        let firstName = pair["firstName"] as! String
+        let lastName = pair["lastName"] as! String
+        cell.textLabel?.text = "\(firstName) \(lastName)"
+        return cell
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let app = UIApplication.shared
+        let studentInformation = self.studentInformation[(indexPath as IndexPath).row]
+        if let toOpen = studentInformation["mediaURL"] as? String {
+            app.openURL(URL(string: toOpen)!)
+        }
     }
+//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        // #warning Incomplete implementation, return the number of rows
+//        return 0
+//    }
 
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

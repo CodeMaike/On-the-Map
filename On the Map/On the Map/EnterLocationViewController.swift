@@ -7,18 +7,22 @@
 //
 
 import UIKit
+import CoreLocation
 
 class EnterLocationViewController: UIViewController {
 
+    //code snippets from https://cocoacasts.com/forward-and-reverse-geocoding-with-clgeocoder-part-1/
+    
     //MARK: Outlets
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var findOnMapButton: UIButton!
     
+    lazy var geocoder = CLGeocoder()
+    
     //MARK: View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -31,16 +35,54 @@ class EnterLocationViewController: UIViewController {
         unsubscribeFromKeyboardNotifications()
     }
 
-    /*
-    // MARK: - Navigation
+    @IBAction func findOnMapPressed(_ sender: Any) {
+        
+        if locationTextField.text != nil {
+            
+            Constants.NewStudent.mapString = locationTextField.text!
+            
+            geocoder.geocodeAddressString(Constants.StudentLocation.mapString) { (placemarks, error) in
+                
+                self.processResponse(withPlacemarks: placemarks, error: error)
+            }
+            
+            let controller = self.storyboard!.instantiateViewController(withIdentifier: "SetLinkToShareViewController") as! SetLinkToShareViewController
+            self.present(controller, animated: true, completion: nil)
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        } else {
+            print("No location entered")
+            //TODO: Error sign
+        }
     }
-    */
-
+    
+    private func processResponse(withPlacemarks placemarks: [CLPlacemark]?, error: Error?) {
+        if let error = error {
+            print("Unable to Forward Geocode Address (\(error))")
+            locationTextField.text = "Unable to Find Location for Address"
+            
+        } else {
+            var location: CLLocation?
+            
+            if let placemarks = placemarks, placemarks.count > 0 {
+                location = placemarks.first?.location
+            }
+            
+            if let location = location {
+                let coordinate = location.coordinate
+                locationTextField.text = "\(coordinate.latitude), \(coordinate.longitude)"
+            } else {
+                locationTextField.text = "No Matching Location Found"
+            }
+            
+            Constants.StudentLocation.latitude = (location?.coordinate.latitude)!
+            Constants.StudentLocation.longitute = (location?.coordinate.longitude)!
+        }
+    }
+    
+    //Dismiss viewController
+    @IBAction func cancelButtonPressed(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 extension EnterLocationViewController {

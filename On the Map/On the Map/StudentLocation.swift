@@ -19,16 +19,16 @@ struct StudentLocation {
     
     init(dictionary: [String:AnyObject]) {
     
-        if let fName = dictionary[ParseClient.StudentLocation.firstName] as? String {
+        if let fName = dictionary[Constants.StudentLocation.firstName] as? String {
             firstName = fName
         }
-        if let lName = dictionary[ParseClient.StudentLocation.lastName] as? String {
+        if let lName = dictionary[Constants.StudentLocation.lastName] as? String {
             lastName = lName
         }
-        if let mapString = dictionary[ParseClient.StudentLocation.mapString] as? String {
+        if let mapString = dictionary[Constants.StudentLocation.mapString] as? String {
             location = mapString
         }
-        if let mediaURL = dictionary[ParseClient.StudentLocation.mediaURL] as? String {
+        if let mediaURL = dictionary[Constants.StudentLocation.mediaURL] as? String {
             website = mediaURL
         }
 //        if let latit = dictionary[ParseClient.StudentLocation.latitude] as? Double {

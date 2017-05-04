@@ -8,8 +8,6 @@
 
 import Foundation
 
-//extension UdacityClient {
-
     struct Constants {
         
         
@@ -35,21 +33,35 @@ import Foundation
             static var uniqueKey = ""
         }
         
-        // MARK: JSON Response Keys
-        struct JSONResponseKeys {
+        struct StudentData {
+            static var studentInformation = [[String:AnyObject]]()
+        }
+        
+        struct NewStudent {
+            static var mapString = ""
+            static var uniqueKey = ""
+        }
+        
+        struct StudentLocation {
             
-            // Public User Data
-            static let userID = "userID"
+            static let parseApplicationID = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
+            static let restAPIKey = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
             
-            static let firstName = "first_name"
-            static let lastName = "last_name"
+            static let studentLocationURL = "https://parse.udacity.com/parse/classes/StudentLocation"
             
-            // Session
-            static let account = "account"
-            static let session = "session"
-            static let accountKey = "key"
-            static let expiration = "expiration"
+            static var objectID = "objectID"
+            static var uniqueKey = "uniqueKey"
+            static var firstName = "firstName"
+            static var lastName = "lastName"
+            static var mapString = "mapString"
+            static var mediaURL = "mediaURL"
+            static var latitude: Double = 37.386052
+            static var longitute: Double = -122.083851
+            
+            //no need to worry about these
+            static var createdAt = "Feb 25, 2015"
+            static var updatedAt = "Feb 25, 2017"
+            static var acl = "Public Write and Read"
         }
 
     }
-//}

@@ -24,7 +24,7 @@ extension UdacityClient {
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             
             guard (error == nil) else {
-                print("Something went wrong with your POST request: \(error)")
+                print("Something went wrong with your POST request: \(String(describing: error))")
                 return
             }
             
