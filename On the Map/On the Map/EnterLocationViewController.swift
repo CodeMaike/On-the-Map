@@ -22,6 +22,9 @@ class EnterLocationViewController: UIViewController {
     //MARK: View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        //test code
+        print("first: \(Constants.StudentLocation.longitute)")
+        print("first: \(Constants.StudentLocation.latitude)")
         
     }
 
@@ -41,17 +44,22 @@ class EnterLocationViewController: UIViewController {
             
             Constants.NewStudent.mapString = locationTextField.text!
             
-            geocoder.geocodeAddressString(Constants.StudentLocation.mapString) { (placemarks, error) in
+//            geocoder.geocodeAddressString(Constants.StudentLocation.mapString) { (placemarks, error) in
+            geocoder.geocodeAddressString(Constants.NewStudent.mapString) { (placemarks, error) in
                 
                 self.processResponse(withPlacemarks: placemarks, error: error)
             }
             
+            
             let controller = self.storyboard!.instantiateViewController(withIdentifier: "SetLinkToShareViewController") as! SetLinkToShareViewController
             self.present(controller, animated: true, completion: nil)
 
+            //test code
+            print("second: \(Constants.StudentLocation.longitute)")
+            print("second: \(Constants.StudentLocation.latitude)")
         } else {
             print("No location entered")
-            //TODO: Error sign
+            //TODO: AlertController
         }
     }
     
@@ -71,7 +79,7 @@ class EnterLocationViewController: UIViewController {
                 let coordinate = location.coordinate
                 locationTextField.text = "\(coordinate.latitude), \(coordinate.longitude)"
             } else {
-                locationTextField.text = "No Matching Location Found"
+                locationTextField.text = "Location not found"
             }
             
             Constants.StudentLocation.latitude = (location?.coordinate.latitude)!

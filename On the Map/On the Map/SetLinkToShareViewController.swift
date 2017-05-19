@@ -22,40 +22,104 @@ class SetLinkToShareViewController: UIViewController, MKMapViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.addressOnMap(address: mapString)
+        //test code
+        print("fourth: \(Constants.StudentLocation.longitute)")
+        print("fourth: \(Constants.StudentLocation.latitude)")
+        
+        Constants.NewStudent.mediaURL = linkToShareTextField.text!
 //        let initialLocation = CLLocation(latitude: Constants.StudentLocation.latitude, longitude: Constants.StudentLocation.longitute)
-//        
 //        centerMapOnLocation(location: initialLocation)
         }
     
-//    let regionRadius: CLLocationDistance = 1000
-//    
-//    func centerMapOnLocation(location: CLLocation) {
-//        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
-//        mapView.setRegion(coordinateRegion, animated: true)
-//    }
-   
-    @IBAction func submitButtonPressed(_ sender: Any) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let initialLocation = CLLocation(latitude: Constants.StudentLocation.latitude, longitude: Constants.StudentLocation.longitute)
+        centerMapOnLocation(location: initialLocation)
         
+        print("third: \(Constants.StudentLocation.longitute)")
+        print("third: \(Constants.StudentLocation.latitude)")
     }
     
-    func addressOnMap(address: String) {
+    let regionRadius: CLLocationDistance = 5000
     
-        let locationRequest = MKLocalSearchRequest()
-        locationRequest.naturalLanguageQuery = mapString
-        locationRequest.region = mapView.region
+    func centerMapOnLocation(location: CLLocation) {
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+   
+    @IBAction func submitButtonPressed(_ sender: Any) {
+//        self.addressOnMap(address: mapString)
+        self.locate(mapString: mapString)
+    }
+    
+    func taskForPOSTMethodParse(newUniqueKey: String, newMapString: String, newMediaURL: String, newLatitude: String, newLongitude: String) {
         
-        let search = MKLocalSearch(request: locationRequest)
-        search.start { (locationRequest, error) in
-            var placeMarks = [MKPlacemark]()
-            if error != nil {
-                print("Location not found")
+        let request = NSMutableURLRequest(url: URL(string: Constants.StudentLocation.studentLocationURL)!)
+        request.httpMethod = "POST"
+        request.addValue(Constants.StudentLocation.parseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.StudentLocation.restAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = "{\"uniqueKey\": \"\(newUniqueKey)\", \"firstName\": \"\(Constants.StudentLocation.firstName)\", \"lastName\": \"\(Constants.StudentLocation.lastName)\",\"mapString\": \"\(newMapString)\", \"mediaURL\": \"\(newMediaURL)\",\"latitude\": \(newLatitude), \"longitude\": \(newLongitude)}".data(using: String.Encoding.utf8)
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            
+            guard (error == nil) else {
+                print("Something went wrong with your POST request: \(String(describing: error))")
                 return
             }
-            for item in locationRequest!.mapItems {
-                placeMarks.append(item.placemark)
-                print("Item: \(item)")
+            
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                print("Your status code does not conform to 2xx.")
+                return
+            }
+            
+            guard let data = data else {
+                print("The request returned no data.")
+                return
+            }
+            
+            print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
+            //            self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: completionHandlerForPOST)
+        
+            var parsedResult: [String:AnyObject]!
+            
+            do {
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
+            } catch {
+                print ("Could not parse the data as JSON: '\(data)'")
+                return
+            }
+            
+            guard let objectID = parsedResult["objectID"] as? String else {
+                print ("There is no objectId")
+                return
+            }
+            
+            Constants.NewStudent.objectID = objectID
+            print("Your objectID: \(objectID)")
+        }
+        
+        task.resume()
+        //        return task
+    }
+    
+    func locate(mapString: String) {
+        
+        let localSearchRequest = MKLocalSearchRequest()
+        localSearchRequest.naturalLanguageQuery = mapString
+        localSearchRequest.region = mapView.region
+        
+        let localSearch = MKLocalSearch(request: localSearchRequest)
+        localSearch.start { (localSearchResponse, error) in
+            var placeMarks = [MKPlacemark]()
+            if error != nil {
+                print("There is an error")
+                return
+            }
+            for response in (localSearchResponse?.mapItems)! {
+                placeMarks.append(response.placemark)
+                print("Response: \(response)")
             }
             
             self.mapView.showAnnotations([placeMarks[0]], animated: false)
@@ -63,46 +127,14 @@ class SetLinkToShareViewController: UIViewController, MKMapViewDelegate {
             let newLatitude = String(placeMarks[0].coordinate.latitude)
             let newLongitude = String(placeMarks[0].coordinate.longitude)
             let newMapString = placeMarks[0].description
-            let newUniqueKey = Constants.StudentLocation.uniqueKey
-            print("New unique key: \(newUniqueKey)")
+            let newUniqueKey = Constants.NewStudent.uniqueKey
+            let newMediaURL = self.linkToShareTextField.text!
             
+            self.taskForPOSTMethodParse(newUniqueKey: newUniqueKey, newMapString: newMapString, newMediaURL: newMediaURL, newLatitude: newLatitude, newLongitude: newLongitude)
             
+            let controller = self.storyboard?.instantiateViewController(withIdentifier: "TabBarController")
+            self.present(controller!, animated: true, completion: nil)
         }
-        
-        //MARK: Check with func in ParseClient
-        func postStudentLocation(newUniqueKey: String, mapString: String, newLatitude: String, newLongitude: String) {
-        
-            let request = NSMutableURLRequest(url: URL(string: Constants.StudentLocation.studentLocationURL)!)
-            request.httpMethod = "POST"
-            request.addValue(Constants.StudentLocation.parseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
-            request.addValue(Constants.StudentLocation.restAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = "{\"uniqueKey\": \"\(Constants.StudentLocation.uniqueKey)\", \"firstName\": \"\(Constants.StudentLocation.firstName)\", \"lastName\": \"\(Constants.StudentLocation.lastName)\",\"mapString\": \"\(Constants.StudentLocation.mapString)\", \"mediaURL\": \"\(Constants.StudentLocation.mediaURL)\",\"latitude\": \(Constants.StudentLocation.latitude), \"longitude\": \(Constants.StudentLocation.longitute)}".data(using: String.Encoding.utf8)
-            
-            let session = URLSession.shared
-            let task = session.dataTask(with: request as URLRequest) { data, response, error in
-                
-                guard (error == nil) else {
-                    print("Something went wrong with your POST request: \(String(describing: error))")
-                    return
-                }
-                
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                    print("Your status code does not conform to 2xx.")
-                    return
-                }
-                
-                guard let data = data else {
-                    print("The request returned no data.")
-                    return
-                }
-                
-                print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
-            }
-            
-            task.resume()
-        }
-        
     }
 
     //Dismiss viewController

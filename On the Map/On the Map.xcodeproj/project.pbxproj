@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		690B0BE91E8008DB0008032B /* UdacityConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690B0BE81E8008DB0008032B /* UdacityConvenience.swift */; };
-		690B0BEB1E8017FA0008032B /* ParseConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690B0BEA1E8017FA0008032B /* ParseConvenience.swift */; };
 		69120F601E7AF06200C4923B /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69120F5F1E7AF06200C4923B /* StudentLocation.swift */; };
 		693422361E70BC2F000878CA /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 693422351E70BC2F000878CA /* SignUpViewController.swift */; };
 		695B7EEA1E6EB9F9003C2F1B /* EnterLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695B7EE91E6EB9F9003C2F1B /* EnterLocationViewController.swift */; };
@@ -29,7 +28,6 @@
 
 /* Begin PBXFileReference section */
 		690B0BE81E8008DB0008032B /* UdacityConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityConvenience.swift; sourceTree = "<group>"; };
-		690B0BEA1E8017FA0008032B /* ParseConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseConvenience.swift; sourceTree = "<group>"; };
 		69120F5F1E7AF06200C4923B /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		693422351E70BC2F000878CA /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		695B7EE91E6EB9F9003C2F1B /* EnterLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterLocationViewController.swift; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 				69120F5F1E7AF06200C4923B /* StudentLocation.swift */,
 				690B0BE81E8008DB0008032B /* UdacityConvenience.swift */,
 				69E7AEE51E705AEB001C63D3 /* ParseClient.swift */,
-				690B0BEA1E8017FA0008032B /* ParseConvenience.swift */,
 				69E7AEE31E7051F1001C63D3 /* Constants.swift */,
 			);
 			name = Model;
@@ -207,7 +204,6 @@
 				695B7EEC1E6EBA11003C2F1B /* SetLinkToShareViewController.swift in Sources */,
 				69E7AEE41E7051F1001C63D3 /* Constants.swift in Sources */,
 				690B0BE91E8008DB0008032B /* UdacityConvenience.swift in Sources */,
-				690B0BEB1E8017FA0008032B /* ParseConvenience.swift in Sources */,
 				693422361E70BC2F000878CA /* SignUpViewController.swift in Sources */,
 				69120F601E7AF06200C4923B /* StudentLocation.swift in Sources */,
 				69EC0FF21E68B24800ABCF3C /* AppDelegate.swift in Sources */,

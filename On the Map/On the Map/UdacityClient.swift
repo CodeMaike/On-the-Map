@@ -79,8 +79,9 @@ class UdacityClient: NSObject {
 
     
     //MARK: Deleting a session
-    func taskForDELETEMethod(_ urlString: String, completionHandlerForDelete: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-    
+//    func taskForDELETEMethod(_ urlString: String, completionHandlerForDelete: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    func taskForDELETEMethod(completionHandlerForDelete: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+        
         let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api.session")!)
         request.httpMethod = "DELETE"
         
@@ -110,9 +111,12 @@ class UdacityClient: NSObject {
                 return
             }
 
-            let range = Range(uncheckedBounds: (5, data.count - 5))
+//            let range = Range(uncheckedBounds: (5, data.count - 5))
+            let range = Range(5..<data.count)
             let newData = data.subdata(in: range)
             print(NSString(data: newData, encoding: String.Encoding.utf8.rawValue)!)
+            
+            self.convertDataWithCompletionHandler(newData, completionHandlerForConvertData: completionHandlerForDelete)
         }
         
         task.resume()

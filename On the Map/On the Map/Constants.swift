@@ -40,6 +40,10 @@ import Foundation
         struct NewStudent {
             static var mapString = ""
             static var uniqueKey = ""
+            static var firstName = "firstName"
+            static var lastName = "lastName"
+            static var mediaURL = "mediaURL"
+            static var objectID = "objectID"
         }
         
         struct StudentLocation {

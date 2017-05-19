@@ -14,14 +14,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     var locationJSON = [[String:AnyObject]]()
+    var address = Constants.NewStudent.mapString
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mapView.delegate = self
+        
         taskForGETMultipleStudentLocationsMethod { (success, locationJSON, errorString) in
             
             let locations = Constants.StudentData.studentInformation
-            print("Locations: \(Constants.StudentData.studentInformation)")
+            print("Locations: \(locations)")
             var annotations = [MKPointAnnotation]()
             
             for dictionary in locations {
@@ -73,9 +76,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.openURL(URL(string: toOpen)!)
+                UIApplication.shared.open(NSURL(string: toOpen)! as URL, options: [:], completionHandler: nil)
             }
         }
     }
@@ -157,5 +159,73 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return task
     }
 
+    /*
+    func taskForPOSTMethodParse(newUniqueKey: String, newAddress: String, newLatitude: String, newLongitude: String) {
+        
+        let request = NSMutableURLRequest(url: URL(string: Constants.StudentLocation.studentLocationURL)!)
+        request.httpMethod = "POST"
+        request.addValue(Constants.StudentLocation.parseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.StudentLocation.restAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = "{\"uniqueKey\": \"\(Constants.StudentLocation.uniqueKey)\", \"firstName\": \"\(Constants.StudentLocation.firstName)\", \"lastName\": \"\(Constants.StudentLocation.lastName)\",\"mapString\": \"\(Constants.StudentLocation.mapString)\", \"mediaURL\": \"\(Constants.StudentLocation.mediaURL)\",\"latitude\": \(Constants.StudentLocation.latitude), \"longitude\": \(Constants.StudentLocation.longitute)}".data(using: String.Encoding.utf8)
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            
+            guard (error == nil) else {
+                print("Something went wrong with your POST request: \(String(describing: error))")
+                return
+            }
+            
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                print("Your status code does not conform to 2xx.")
+                return
+            }
+            
+            guard let data = data else {
+                print("The request returned no data.")
+                return
+            }
+            
+            print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
+            //            self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: completionHandlerForPOST)
+        }
+        
+        task.resume()
+        //        return task
+    }
+    
+    func searchLocation(address: String) {
+    
+        let localSearchRequest = MKLocalSearchRequest()
+        localSearchRequest.naturalLanguageQuery = address
+        localSearchRequest.region = mapView.region
+        
+        let localSearch = MKLocalSearch(request: localSearchRequest)
+        localSearch.start { (localSearchResponse, error) in
+            var placeMarks = [MKPlacemark]()
+            if error != nil {
+                print("There is an error")
+            }
+            for response in (localSearchResponse?.mapItems)! {
+                placeMarks.append(response.placemark)
+                print("Response: \(response)")
+            }
+            
+            self.mapView.showAnnotations([placeMarks[0]], animated: false)
+            
+            let newLatitude = String(placeMarks[0].coordinate.latitude)
+            let newLongitude = String(placeMarks[0].coordinate.longitude)
+            let newAddress = placeMarks[0].description
+            let newUniqueKey = Constants.NewStudent.uniqueKey
+            print("The new unique key is \(newUniqueKey)")
+        
+            self.taskForPOSTMethodParse(newUniqueKey: newUniqueKey, newAddress: newAddress, newLatitude: newLatitude, newLongitude: newLongitude)
+            
+            let controller = self.storyboard?.instantiateViewController(withIdentifier: "MapViewController")
+            self.present(controller!, animated: true, completion: nil)
+        }
+    }
+    */
 
  }

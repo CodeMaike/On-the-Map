@@ -7,15 +7,20 @@
 //
 
 import Foundation
+import MapKit
 
 class ParseClient: NSObject {
+    
+    var session = URLSession.shared
+    var appDelegate: AppDelegate!
     
     //TODOD: Make constants and use to replace 
     
     //MARK: Methods 
     
     //MARK: Get location of multiple students
-    func taskForGETMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+//    func taskForGETMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    func taskForGETMultipleStudentLocationsMethod(completionHandlerForMultipleStudentLocations: @escaping (_ success: Bool, _ locationJSON: [[String:AnyObject]]?, _ errorString: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.StudentLocation.studentLocationURL)!)
         request.addValue(Constants.StudentLocation.parseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
@@ -43,13 +48,15 @@ class ParseClient: NSObject {
         }
         
         task.resume()
-        return task
+//        return task
     }
     
     
     //MARK: Get a student location
-    func taskForGETLocationMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-        
+//    func taskForGETLocationMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    
+    func taskForGETSingleStudentLocation() -> URLSessionDataTask {
+    
         let urlString = Constants.StudentLocation.studentLocationURL
         let url = URL(string: urlString)
         let request = NSMutableURLRequest(url: url!)
@@ -83,8 +90,10 @@ class ParseClient: NSObject {
     
     
     //MARK: Post student location
-    func taskForPOSTMethod(_ method: String, parameters: [String:AnyObject], jsonBody: String, completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-    
+//    func taskForPOSTMethod(_ method: String, parameters: [String:AnyObject], jsonBody: String, completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+//        func taskForPOSTMethodParse(_ completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionTask {
+    func taskForPOSTMethodParse(newUniqueKey: String, newAddress: String, newLatitude: String, newLongitude: String) {
+        
         let request = NSMutableURLRequest(url: URL(string: Constants.StudentLocation.studentLocationURL)!)
         request.httpMethod = "POST"
         request.addValue(Constants.StudentLocation.parseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
@@ -111,10 +120,11 @@ class ParseClient: NSObject {
             }
             
             print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
+//            self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: completionHandlerForPOST)
         }
         
         task.resume()
-        return task
+//        return task
     }
     
     //MARK: Put a student location
@@ -154,6 +164,19 @@ class ParseClient: NSObject {
         return task
     }
     
+    //convert raw JSON to usable foundation object
+    private func convertDataWithCompletionHandler(_ data: Data, completionHandlerForConvertData: (_ result: AnyObject?, _ error: NSError?) -> Void) {
+        
+        var parsedResult: AnyObject! = nil
+        do {
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
+        } catch {
+            let userInfo = [NSLocalizedDescriptionKey: "Could not parse data as JSON: \(data)"]
+            completionHandlerForConvertData(nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+        }
+        
+        completionHandlerForConvertData(parsedResult, nil)
+    }
     
     //MARK: Shared instance
     class func sharedInstance() -> ParseClient {
