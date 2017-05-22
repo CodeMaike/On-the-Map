@@ -9,6 +9,7 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
 class SetLinkToShareViewController: UIViewController, MKMapViewDelegate {
 
@@ -19,29 +20,30 @@ class SetLinkToShareViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var submitButton: UIButton!
     
     var mapString = Constants.NewStudent.mapString
+    //new
+    let geoCoder = CLGeocoder()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //test code
-        print("fourth: \(Constants.StudentLocation.longitute)")
-        print("fourth: \(Constants.StudentLocation.latitude)")
-        
-        Constants.NewStudent.mediaURL = linkToShareTextField.text!
-//        let initialLocation = CLLocation(latitude: Constants.StudentLocation.latitude, longitude: Constants.StudentLocation.longitute)
-//        centerMapOnLocation(location: initialLocation)
-        }
+    let initialLocation = CLLocation(latitude: Constants.StudentLocation.latitude, longitude: Constants.StudentLocation.longitute)
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        let initialLocation = CLLocation(latitude: Constants.StudentLocation.latitude, longitude: Constants.StudentLocation.longitute)
-        centerMapOnLocation(location: initialLocation)
+    override func viewDidLoad() {
         
-        print("third: \(Constants.StudentLocation.longitute)")
-        print("third: \(Constants.StudentLocation.latitude)")
+        mapView.delegate = self
+        Constants.NewStudent.mediaURL = linkToShareTextField.text!
+        
+        //center map on student's location
+        geoCoder.geocodeAddressString(mapString) { (placemarks, error) in
+            guard
+                let placemarks = placemarks,
+                let location = placemarks.first?.location
+                else {
+                    return
+            }
+            self.centerMapOnLocation(location: location)
+        }
     }
     
+    //define zoom radius of location
     let regionRadius: CLLocationDistance = 5000
-    
     func centerMapOnLocation(location: CLLocation) {
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
@@ -136,7 +138,7 @@ class SetLinkToShareViewController: UIViewController, MKMapViewDelegate {
             self.present(controller!, animated: true, completion: nil)
         }
     }
-
+    
     //Dismiss viewController
     @IBAction func cancelButtonPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil)
